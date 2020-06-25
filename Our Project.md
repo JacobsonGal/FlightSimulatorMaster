@@ -1,4 +1,4 @@
-# Flight Simulator Control 
+# Flight Simulator Controller 
 
 [![Presentation Project](/UML/example.png)](https://youtu.be/rWe9220DOY8)
 
