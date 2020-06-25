@@ -55,7 +55,7 @@ We created the ```CacheManager``` interface to manage the cache for us, with the
 
 ## UML
 
-![ServerClient Java UML](/project_UML.png "ServerClient Java UML")
+![ServerClient Java UML](/UML/project_uml.png "ServerClient Java UML")
 
 ### Our Concerete Server
 Given a graph, it could solve it using [A-star](https://en.wikipedia.org/wiki/A*_search_algorithm) algorithm ( which is already implemented in this project based on djkistra algorithm using manhattan distances ) or any other search algorithm.
