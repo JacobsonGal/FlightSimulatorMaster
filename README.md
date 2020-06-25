@@ -55,7 +55,7 @@ We created the ```CacheManager``` interface to manage the cache for us, with the
 
 ## UML
 
-![ServerClient Java UML](/project_uml.png "ServerClient Java UML")
+![ServerClient Java UML](/project_UML.png "ServerClient Java UML")
 
 ### Our Concerete Server
 Given a graph, it could solve it using [A-star](https://en.wikipedia.org/wiki/A*_search_algorithm) algorithm ( which is already implemented in this project based on djkistra algorithm using manhattan distances ) or any other search algorithm.
@@ -131,7 +131,7 @@ We can see that arithmetic expressions are supported as well, and to interpret t
 ### Command Pattern
 
 <p align="center">
-  <img src="/uml/CommandPattern.png" width="600">
+  <img src="/UML/CommandPattern.png" width="600">
 </p>
 
 In this project there is an extensive use of commands, the plane needs to receive a lot of instructions in a short period of time 
