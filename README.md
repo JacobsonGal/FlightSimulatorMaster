@@ -131,7 +131,7 @@ We can see that arithmetic expressions are supported as well, and to interpret t
 ### Command Pattern
 
 <p align="center">
-  <img src="/uml/CommandPattern.png" width="600">
+  <img src="/UML/CommandPattern.png" width="600">
 </p>
 
 In this project there is an extensive use of commands, the plane needs to receive a lot of instructions in a short period of time 
