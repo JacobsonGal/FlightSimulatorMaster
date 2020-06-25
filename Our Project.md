@@ -220,4 +220,4 @@ This is done by the Observer Pattern, which binds the different components toget
 
 
 ## Authors
-* **[Gal Jacobson]**(https://www.linkedin.com/in/jacobsongal/) & **[Roey Miller]**(https://www.linkedin.com/in/roey-miller-046b68199/)
+* **[Gal Jacobson](https://www.linkedin.com/in/jacobsongal/)** & **[Roey Miller](https://www.linkedin.com/in/roey-miller-046b68199/)**
