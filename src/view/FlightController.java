@@ -1,0 +1,547 @@
+package view;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+
+public class FlightController implements Initializable, Observer {
+
+	// -------------- Data Members ----------------- //
+	private ViewModel viewModel;
+	public JoystickController joystickController;
+	
+	// -------------- GUI Members ----------------- //
+    @FXML
+    private Canvas airplane;
+    @FXML
+    private Canvas markX;
+    @FXML
+    private  TextArea TextArea;
+    @FXML
+    private TextField port;
+    @FXML
+    private TextField ip;
+	@FXML
+	private TextArea logBar;
+    @FXML
+    private Slider throttle;
+    @FXML
+    private Slider rudder;
+    @FXML
+    private RadioButton auto;
+    @FXML
+    private MapController map;
+    @FXML
+    private RadioButton manual;
+    @FXML
+    private Circle border;
+    @FXML
+    private Circle Joystick;
+    @FXML
+    private TitledPane background;
+
+	// ------------- Plane ----------------- //
+    
+    double orgSceneX, orgSceneY;
+    double orgTranslateX, orgTranslateY;
+    public DoubleProperty markSceneX, markSceneY;
+    public DoubleProperty aileron;
+    public DoubleProperty elevator;
+    public DoubleProperty airplaneX;
+    public DoubleProperty airplaneY;
+    public DoubleProperty startX;
+    public DoubleProperty startY;
+    public DoubleProperty offset;
+    public DoubleProperty heading;
+	
+	// ------------- Map ----------------- //
+    
+    public double lastX;
+    public double lastY;
+    public int mapData[][];
+    private Image plane[];
+    private Image mark;
+    private String[] solution;
+    
+	// ------------- Properties ----------------- //
+    
+    private BooleanProperty path;
+	public BooleanProperty isConnectedToSimulator;
+
+
+    //Data binding between View and the ViewModel 
+    public void setViewModel(ViewModel viewModel){
+        this.viewModel=viewModel;
+        throttle.valueProperty().bindBidirectional(viewModel.throttle);
+        rudder.valueProperty().bindBidirectional(viewModel.rudder);
+        joystickController = new JoystickController(Joystick, border, rudder, throttle,viewModel);
+        viewModel.aileron.bind(joystickController.aileron);
+        viewModel.elevator.bind(joystickController.elevator);
+        aileron=new SimpleDoubleProperty();
+        elevator=new SimpleDoubleProperty();
+        //aileron.bindBidirectional(viewModel.aileron);
+        //elevator.bindBidirectional(viewModel.elevator);
+        airplaneX=new SimpleDoubleProperty();
+        airplaneY=new SimpleDoubleProperty();
+        startX=new SimpleDoubleProperty();
+        startY=new SimpleDoubleProperty();
+        airplaneX.bindBidirectional(viewModel.airplaneX);
+        airplaneY.bindBidirectional(viewModel.airplaneY);
+        startX.bindBidirectional(viewModel.startX);
+        startY.bindBidirectional(viewModel.startY);
+        offset=new SimpleDoubleProperty();
+        offset.bindBidirectional(viewModel.offset);
+        viewModel.script.bindBidirectional(TextArea.textProperty());
+        heading=new SimpleDoubleProperty();
+        heading.bindBidirectional(viewModel.heading);
+        markSceneX=new SimpleDoubleProperty();
+        markSceneY=new SimpleDoubleProperty();
+        markSceneY.bindBidirectional(viewModel.markSceneY);
+        markSceneX.bindBidirectional(viewModel.markSceneX);
+        path=new SimpleBooleanProperty();
+        path.bindBidirectional(viewModel.path);
+        path.setValue(false);
+		logBar.setEditable(false);
+		isConnectedToSimulator = new SimpleBooleanProperty();
+        plane=new Image[8];
+        try {
+            plane[0]=new Image(new FileInputStream("./resources/plane0.png"));
+            plane[1]=new Image(new FileInputStream("./resources/plane45.png"));
+            plane[2]=new Image(new FileInputStream("./resources/plane90.png"));
+            plane[3]=new Image(new FileInputStream("./resources/plane135.png"));
+            plane[4]=new Image(new FileInputStream("./resources/plane180.png"));
+            plane[5]=new Image(new FileInputStream("./resources/plane225.png"));
+            plane[6]=new Image(new FileInputStream("./resources/plane270.png"));
+            plane[7]=new Image(new FileInputStream("./resources/plane315.png"));
+            mark=new Image(new FileInputStream("./resources/mark.png"));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    //Load the map 
+    public void LoadMap() {
+		FileChooser fc = new FileChooser();
+		fc.setTitle("Load File to interpret automatically");
+		fc.setInitialDirectory(new File("./Resources"));
+		fc.setSelectedExtensionFilter(new ExtensionFilter("Text Files", "*.txt"));
+		File selectedFile = fc.showOpenDialog(null);
+		
+        if (selectedFile != null) {
+            BufferedReader br = null;
+            String line = "";
+            String cvsSplitBy = ",";
+
+            ArrayList<String[]> numbers = new ArrayList<>();
+            try {
+
+                br = new BufferedReader(new FileReader(selectedFile));
+                String[] start=br.readLine().split(cvsSplitBy);
+                startX.setValue(Double.parseDouble(start[0]));
+                startY.setValue(Double.parseDouble(start[1]));
+                start=br.readLine().split(cvsSplitBy);
+                offset.setValue(Double.parseDouble(start[0]));
+                while ((line = br.readLine()) != null) {
+                    numbers.add(line.split(cvsSplitBy));
+                }
+                mapData = new int[numbers.size()][];
+
+                for (int i = 0; i < numbers.size(); i++) {
+                    mapData[i] = new int[numbers.get(i).length];
+
+                    for (int j = 0; j < numbers.get(i).length; j++) {
+                        String tmp=numbers.get(i)[j];
+                        mapData[i][j] = Integer.parseInt(tmp);
+
+                    }
+                }
+                this.viewModel.setData(mapData);
+                this.drawAirplane();
+                map.setMapData(mapData);
+                logBar.appendText("Map loaded succesfully!\n");
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    //Connect to FlightGear simulator
+    public void Connect(){
+		Stage window = new Stage();
+		GridPane grid = new GridPane();
+		TextField ipInput = new TextField();
+		TextField portInput = new TextField();
+		ipInput.appendText("127.0.0.1");
+		//ipInput.setPromptText("127.0.0.1");
+		portInput.appendText("5402");
+		//portInput.setPromptText("5402");
+		Label ipCommentlabel = new Label("FlightGear simulator's IP:");
+		Label portCommentlabel = new Label("FlightGear simulator's Port:");
+		Button b = new Button("Connect");
+		b.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+			b.setCursor(Cursor.HAND);
+			b.setEffect(new DropShadow());
+		});
+		b.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+			b.setCursor(null);
+			b.setEffect(null);
+		});
+		grid.setAlignment(Pos.CENTER);
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(25, 25, 25, 25));
+		Text connect = new Text("Connect");
+		connect.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		grid.add(connect, 0, 0);
+		grid.add(ipCommentlabel, 0, 1);
+		grid.add(ipInput, 1, 1);
+		grid.add(portCommentlabel, 0, 2);
+		grid.add(portInput, 1, 2);
+		HBox hbButton = new HBox(10);
+		hbButton.setAlignment(Pos.BOTTOM_CENTER);
+		hbButton.getChildren().add(b);
+		grid.add(hbButton, 1, 4);
+		window.setScene(new Scene(grid, 400, 250));
+		window.show();
+		b.setOnAction(e -> {
+			if (!ipInput.getText().equals("") && !portInput.getText().equals("")) {
+			this.viewModel.ip.bindBidirectional(ipInput.textProperty());
+		    this.viewModel.port.bindBidirectional(portInput.textProperty());
+            viewModel.connect();
+			isConnectedToSimulator.setValue(true);
+			logBar.appendText("Established connection to the simulator!\n");
+			window.close();
+			}else {
+				logBar.appendText("Invalid parameters!\n");
+			}
+		});
+
+    }
+    //Connect to Solver and calculate the shortest path
+    public void CalculatePath(){
+    	Stage window = new Stage();
+		GridPane grid = new GridPane();
+		TextField ipInput = new TextField();
+		TextField portInput = new TextField();
+		ipInput.appendText("127.0.0.1");
+		ipInput.setPromptText("127.0.0.1");
+		portInput.appendText("2030");
+		portInput.setPromptText("2030");
+		Label ipCommentlabel = new Label("Enter IP of a solver server:");
+		Label portCommentlabel = new Label("Enter Port of a solver server:");
+		Button b = new Button("Connect");
+		grid.setAlignment(Pos.CENTER);
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(25, 25, 25, 25));
+		Text connect = new Text("Calculate Path");
+		connect.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		grid.add(connect, 0, 0);
+		grid.add(ipCommentlabel, 0, 1);
+		grid.add(ipInput, 1, 1);
+		grid.add(portCommentlabel, 0, 2);
+		grid.add(portInput, 1, 2);
+		HBox hbButton = new HBox(10);
+		hbButton.setAlignment(Pos.BOTTOM_CENTER);
+		hbButton.getChildren().add(b);
+		grid.add(hbButton, 1, 4);
+		b.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+			b.setCursor(Cursor.HAND);
+			b.setEffect(new DropShadow());
+		});
+		b.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+			b.setCursor(null);
+			b.setEffect(null);
+		});
+		window.setScene(new Scene(grid, 400, 250));
+		window.show();
+		b.setOnAction(e -> {
+			if (!ipInput.getText().equals("") && !portInput.getText().equals("")) {
+			this.viewModel.ip.bindBidirectional(ipInput.textProperty());
+		    this.viewModel.port.bindBidirectional(portInput.textProperty());
+			double H = markX.getHeight();
+            double W = markX.getWidth();
+            double h = H / mapData.length;
+            double w = W / mapData[0].length;
+            viewModel.findPath(h,w);
+            //boolean variable which indicates if this the first time you needed to find the shortest path
+            path.setValue(true);
+            logBar.appendText("Established connection to a solver server!\n");
+            logBar.appendText("Displaying shortest path\n");
+			window.close();
+			} else {
+				logBar.appendText("Invalid parameters!\n");}
+		});
+    }
+    //Set Autopilot ON
+    public void AutoPilot(){
+    	FileChooser fc = new FileChooser();
+		fc.setTitle("Load File to interpret automatically");
+		fc.setInitialDirectory(new File("./Resources"));
+		fc.setSelectedExtensionFilter(new ExtensionFilter("Text Files", "*.txt"));
+		File selectedFile = fc.showOpenDialog(null);
+		try {
+			if (selectedFile != null) {
+				Scanner sc = new Scanner(selectedFile); // Display chosen file in text area
+				while (sc.hasNextLine()) {
+					TextArea.appendText(sc.nextLine());
+					TextArea.appendText("\n");
+				}
+				//sc.close();
+				//fileName.setValue(selectedFile.getName());
+				viewModel.parse();
+			}
+		} catch (FileNotFoundException e) {e.getStackTrace();}
+    	//Select("auto");
+    	if(manual.isSelected())
+        {
+            manual.setSelected(false);
+            joystickController.manual=false;
+            auto.setSelected(true);
+
+        }
+        viewModel.execute();
+    	logBar.appendText("Autopilot Mode Activated!\n");
+    }
+    //Set Manual joystick ON
+    public void Manual()
+    {
+        //Select("manual");
+        if(auto.isSelected())
+        {
+            auto.setSelected(false);
+            manual.setSelected(true);
+            joystickController.manual=true;
+            viewModel.stopAutoPilot();
+        }
+        logBar.appendText("Manual Mode Activated !\n");
+    }
+    //Draws an airplane on the map according to its position of flight
+    public void drawAirplane(){
+        if(airplaneX.getValue()!=null&&airplaneY.getValue()!=null)
+        {
+
+            double H = airplane.getHeight();
+            double W = airplane.getWidth();
+            double h = H / mapData.length;
+            double w = W / mapData[0].length;
+            GraphicsContext gc = airplane.getGraphicsContext2D();
+            lastX=airplaneX.getValue();
+            lastY=airplaneY.getValue()*-1;
+            gc.clearRect(0,0,W,H);
+
+            if(heading.getValue()>=0&&heading.getValue()<39)
+                gc.drawImage(plane[0], w*lastX, lastY*h, 25, 25);
+            if(heading.getValue()>=39&&heading.getValue()<80)
+                gc.drawImage(plane[1], w*lastX, lastY*h, 25, 25);
+            if(heading.getValue()>=80&&heading.getValue()<129)
+                gc.drawImage(plane[2], w*lastX, lastY*h, 25, 25);
+            if(heading.getValue()>=129&&heading.getValue()<170)
+                gc.drawImage(plane[3], w*lastX, lastY*h, 25, 25);
+            if(heading.getValue()>=170&&heading.getValue()<219)
+                gc.drawImage(plane[4], w*lastX, lastY*h, 25, 25);
+            if(heading.getValue()>=219&&heading.getValue()<260)
+                gc.drawImage(plane[5], w*lastX, lastY*h, 25, 25);
+            if(heading.getValue()>=260&&heading.getValue()<309)
+                gc.drawImage(plane[6], w*lastX, lastY*h, 25, 25);
+            if(heading.getValue()>=309)
+                gc.drawImage(plane[7], w*lastX, lastY*h, 25, 25);
+        }
+
+    }
+    //Draw the shortest path 
+    public void drawMark(){
+        double H = markX.getHeight();
+        double W = markX.getWidth();
+        double h = H / mapData.length;
+        double w = W / mapData[0].length;
+        GraphicsContext gc = markX.getGraphicsContext2D();
+        gc.clearRect(0,0,W,H);
+        gc.drawImage(mark, markSceneX.getValue()-13,markSceneY.getValue() , 25, 25);
+        if(path.getValue())
+            viewModel.findPath(h,w);
+    }
+    //Draw the line from airplane to target
+    public void drawLine(){
+        double H = markX.getHeight();
+        double W = markX.getWidth();
+        double h = H / mapData.length;
+        double w = W / mapData[0].length;
+        GraphicsContext gc=markX.getGraphicsContext2D();
+        String move=solution[1];
+        double x= airplaneX.getValue()*w+10*w;
+        double y=airplaneY.getValue()*-h+6*h;
+        for(int i=2;i<solution.length;i++)
+        {
+            switch (move) {
+                case "Right":
+                    gc.setStroke(Color.BLACK.darker());
+                    gc.strokeLine(x, y, x + w, y);
+                    x +=  w;
+                    break;
+                case "Left":
+                    gc.setStroke(Color.BLACK.darker());
+                    gc.strokeLine(x, y, x -  w, y);
+                    x -=  w;
+                    break;
+                case "Up":
+                    gc.setStroke(Color.BLACK.darker());
+                    gc.strokeLine(x, y, x, y - h);
+                    y -=  h;
+                    break;
+                case "Down":
+                    gc.setStroke(Color.BLACK.darker());
+                    gc.strokeLine(x, y, x, y +  h);
+                    y += h;
+            }
+            move=solution[i];
+        }
+
+
+
+    }
+    //Event - pressing on the map
+    EventHandler<MouseEvent> mapClick = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent e) {
+            markSceneX.setValue(e.getX());
+            markSceneY.setValue(e.getY());
+            drawMark();
+        }
+    };
+    //Event - Pressing on the joystick
+    EventHandler<MouseEvent> joystickClick =
+            new EventHandler<MouseEvent>() {
+
+                @Override
+                public void handle(MouseEvent t) {
+                	if (!isConnectedToSimulator.get())
+            			logBar.appendText("You are not connected to the Simulator!\n");
+                	else 
+                		joystickController.innerPressed(t);
+                    /*orgSceneX = t.getSceneX();
+                    orgSceneY = t.getSceneY();
+                    orgTranslateX = ((Circle)(t.getSource())).getTranslateX();
+                    orgTranslateY = ((Circle)(t.getSource())).getTranslateY();*/
+                }
+            };
+    //Event - Dragging the joystick
+    //Event - Dragging the joystick
+    EventHandler<MouseEvent> joystickMove =
+            new EventHandler<MouseEvent>() {
+
+                @Override
+                public void handle(MouseEvent t) {
+                	if (!isConnectedToSimulator.get())
+            			logBar.appendText("You are not connected to the Simulator!\n");
+                	else {
+                		joystickController.innerDragged(t);
+                		logBar.appendText("Set Aileron: "+joystickController.aileron.get()+" || "+"Elevator: "+joystickController.elevator.get()+"\n");    
+                	}
+                	/* double offsetX = t.getSceneX() - orgSceneX;
+                    double offsetY = t.getSceneY() - orgSceneY;
+                    double newTranslateX = orgTranslateX + offsetX;
+                    double newTranslateY = orgTranslateY + offsetY;
+                    if(isInCircle(newTranslateX,newTranslateY)) {
+                        ((Circle) (t.getSource())).setTranslateX(newTranslateX);
+                        ((Circle) (t.getSource())).setTranslateY(newTranslateY);
+                        if(manual.isSelected()) {
+                            aileron.setValue(normalizationX(newTranslateX));
+                            elevator.setValue(normalizationY(newTranslateY));
+                            viewModel.setJoystick();
+                        }
+                    }
+                    */
+                }
+            };
+    //Event - Releasing the joystick
+    //Event - Releasing the joystick
+    EventHandler<MouseEvent> joystickRelease = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent t) {
+                	if (!isConnectedToSimulator.get())
+            			logBar.appendText("You are not connected to the Simulator!\n");
+                	else {
+                		joystickController.innerReleased(t);
+                		logBar.appendText("Set Aileron: "+joystickController.aileron.get()+" || "+"Elevator: "+joystickController.elevator.get()+"\n");
+                	}
+                	
+                    /*((Circle)(t.getSource())).setTranslateX(orgTranslateX);
+                    ((Circle)(t.getSource())).setTranslateY(orgTranslateY);*/
+                }
+            };
+    //Get data from the mouse 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        if(location.getPath().contains("Flight.fxml")) {
+
+            throttle.valueProperty().addListener((observable, oldValue, newValue) -> {
+            	if (!isConnectedToSimulator.get())
+    				logBar.appendText("You are not connected to the Simulator!\n");
+    			else if (manual.isSelected()) {
+                    viewModel.setThrottle();
+            		logBar.appendText("Set Rudder: "+throttle.getValue()+"\n");
+    			}
+                
+            });
+
+            rudder.valueProperty().addListener((observable, oldValue, newValue) -> {
+            	if (!isConnectedToSimulator.get())
+    				logBar.appendText("You are not connected to the Simulator!\n");
+    			else if (manual.isSelected()) {
+                    viewModel.setRudder();
+                	logBar.appendText("Set Rudder: "+rudder.getValue()+"\n");
+    			}
+            });
+            Joystick.setOnMousePressed(joystickClick);
+            Joystick.setOnMouseDragged(joystickMove);
+            Joystick.setOnMouseReleased(joystickRelease);
+            markX.setOnMouseClicked(mapClick);
+        }
+    }
+    //Update observers
+    @Override
+    public void update(Observable o, Object arg) {
+        if(o==viewModel)
+        {
+            if(arg==null)
+                drawAirplane();
+            else
+            {
+                solution=(String[])arg;
+                this.drawLine();
+            }
+        }
+    }
+}
