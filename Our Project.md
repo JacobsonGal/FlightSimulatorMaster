@@ -1,6 +1,6 @@
 # Flight Simulator Control 
 
-[![Presentation Project](/uml/example.png)](https://youtu.be/rWe9220DOY8)
+[![Presentation Project](/UML/example.png)](https://youtu.be/rWe9220DOY8)
 
 Press on the photo so see a video of the project.
 
@@ -61,7 +61,7 @@ We created the ```CacheManager``` interface to manage the cache for us, with the
 Given a graph, it could solve it using [A-star](https://en.wikipedia.org/wiki/A*_search_algorithm) algorithm ( which is already implemented in this project based on djkistra algorithm using manhattan distances ) or any other search algorithm.
 
 <p align="center">
-  <img src="/uml/server_bridgepattern.png" width="600">
+  <img src="/UML/server_bridgepattern.png" width="600">
 </p>
 In our concrete server, given a weighted graph, it will run the search algorithm, and as an output it will return the cheapest route to the target.
 
@@ -148,7 +148,7 @@ So if, for example, we take a look at the "loop" command or "if" command, then w
 ### Interpreter stages
 
 <p align="center">
-  <img src="/uml/interpreter.png" width="600">
+  <img src="/UML/interpreter.png" width="600">
 </p>
 
 So this script-reader works in a very similar way to the interpreter of a real programming language.
@@ -167,7 +167,7 @@ So, before we start running the commands, we will make sure that a ``Pre-Parser`
 ## MVVM Architecture
 
 <p align="center">
-  <img src="/uml/mvvm.png" width="600">
+  <img src="/UML/mvvm.png" width="600">
 </p>
 
 In this project we chose to use the **MVVM architecture**.
@@ -187,25 +187,29 @@ For the MVVM architecture to work, we'll have to wrap the different components t
 This is done by the Observer Pattern, which binds the different components together, and notify them about changes that are made or needs to be made as required by the operator. 
 
 ```java
-   FXMLLoader loader = new FXMLLoader(getClass().getResource("Flight.fxml"));
+   	openFlightGear();
+    	System.out.println("Welcome to Flight Simulator Controller !");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Flight.fxml"));
         Parent root = loader.load();
         FlightController ctrl = loader.getController();
         ViewModel viewModel=new ViewModel();
-        Model model=new Model();
+        MainModel model=new MainModel();
         model.addObserver(viewModel);
         viewModel.setModel(model);
         viewModel.addObserver(ctrl);
         ctrl.setViewModel(viewModel);
-        primaryStage.setTitle("Flight Gear Simulator");
+        primaryStage.setTitle("FlightGear Simulator Controller");
+		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("./images/logo.png")));
+	    primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> {
             DisconnectCommand command=new DisconnectCommand();
             String[] disconnect={""};
             command.executeCommand(disconnect);
-            AutoPilotParser.thread1.interrupt();
+            //AutoPilotParser.thread1.interrupt();
             model.stopAll();
-            System.out.println("bye");
+            System.out.println("Exit Flight Simulator Controller");
         });
 ```
 
@@ -216,4 +220,4 @@ This is done by the Observer Pattern, which binds the different components toget
 
 
 ## Authors
-* **Or Levi** - [LinkedIn](https://www.linkedin.com/in/orlevi13/) & **Eden Shtein** - [LinkedIn](https://www.linkedin.com/in/edenshtein/)
+* **Gal Jacobson** - [LinkedIn](https://www.linkedin.com/in/jacobsongal/) & **Roey Miller** - [LinkedIn](https://www.linkedin.com/in/roey-miller-046b68199/)
