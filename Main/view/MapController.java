@@ -45,9 +45,11 @@ public class MapController extends Canvas {
                 for (int j=0;j<mapData[i].length;j++)
                 {
                     int tmp=mapData[i][j];
-                    gc.setFill(Color.rgb(255-tmp,0+tmp,0));
+                    gc.setFill(Color.rgb(0,0+tmp,255-tmp));
                     gc.fillRect(j*w,i*h,w,h);
                 }
         }
     }
+    
+    
 }
