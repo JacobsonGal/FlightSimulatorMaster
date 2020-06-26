@@ -9,7 +9,7 @@ import java.util.Observer;
 import java.util.Scanner;
 
 public class ViewModel extends Observable implements Observer {
-	private MainModel mainModel;
+	private  MainModel mainModel;
 	public DoubleProperty throttle;
     public DoubleProperty rudder;
     public DoubleProperty aileron;

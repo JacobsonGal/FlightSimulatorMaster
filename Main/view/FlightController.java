@@ -26,6 +26,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.SimulatorModel;
+import model.interpreter.commands.ConnectCommand;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 import java.io.*;
@@ -141,7 +143,7 @@ public class FlightController implements Initializable, Observer {
             plane[5]=new Image(new FileInputStream("./resources/plane225.png"));
             plane[6]=new Image(new FileInputStream("./resources/plane270.png"));
             plane[7]=new Image(new FileInputStream("./resources/plane315.png"));
-            mark=new Image(new FileInputStream("./resources/mark.png"));
+            mark=new Image(new FileInputStream("./resources/mark1.png"));
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -231,6 +233,7 @@ public class FlightController implements Initializable, Observer {
 		hbButton.setAlignment(Pos.BOTTOM_CENTER);
 		hbButton.getChildren().add(b);
 		grid.add(hbButton, 1, 4);
+		window.setTitle("Connect to FlighGear");
 		window.setScene(new Scene(grid, 400, 250));
 		window.show();
 		b.setOnAction(e -> {
@@ -238,10 +241,16 @@ public class FlightController implements Initializable, Observer {
 			this.viewModel.ip.bindBidirectional(ipInput.textProperty());
 		    this.viewModel.port.bindBidirectional(portInput.textProperty());
             viewModel.connect();
-			isConnectedToSimulator.setValue(true);
-			logBar.appendText("Established connection to the simulator!\n");
+            if (SimulatorModel.on==true) {
+				isConnectedToSimulator.setValue(true);
+				logBar.appendText("You are connected to the FlightGear simulator!\n");
+            }
+            else {
+            	System.out.println("Failed connecting to FlightGear!");
+            	logBar.appendText("Failed connecting to FlightGear!\n");
+			}
 			window.close();
-			}else {
+			} else {
 				logBar.appendText("Invalid parameters!\n");
 			}
 		});
@@ -257,14 +266,14 @@ public class FlightController implements Initializable, Observer {
 		ipInput.setPromptText("127.0.0.1");
 		portInput.appendText("2030");
 		portInput.setPromptText("2030");
-		Label ipCommentlabel = new Label("Enter IP of a solver server:");
-		Label portCommentlabel = new Label("Enter Port of a solver server:");
+		Label ipCommentlabel = new Label("Enter IP of the solver server:");
+		Label portCommentlabel = new Label("Enter Port of the solver server:");
 		Button b = new Button("Connect");
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
-		Text connect = new Text("Calculate Path");
+		Text connect = new Text("Connect to the Solver Server");
 		connect.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		grid.add(connect, 0, 0);
 		grid.add(ipCommentlabel, 0, 1);
@@ -283,6 +292,7 @@ public class FlightController implements Initializable, Observer {
 			b.setCursor(null);
 			b.setEffect(null);
 		});
+		window.setTitle("Calculate Path");
 		window.setScene(new Scene(grid, 400, 250));
 		window.show();
 		b.setOnAction(e -> {
@@ -296,7 +306,7 @@ public class FlightController implements Initializable, Observer {
             viewModel.findPath(h,w);
             //boolean variable which indicates if this the first time you needed to find the shortest path
             path.setValue(true);
-            logBar.appendText("Established connection to a solver server!\n");
+            logBar.appendText("You are connected to a solver server!\n");
             logBar.appendText("Displaying shortest path\n");
 			window.close();
 			} else {
@@ -333,7 +343,7 @@ public class FlightController implements Initializable, Observer {
         viewModel.execute();
     	logBar.appendText("Autopilot Mode Activated!\n");
     }
-    //Set Manual joystick ON
+    //Set Manual Joystick ON
     public void Manual()
     {
         //Select("manual");
@@ -449,10 +459,6 @@ public class FlightController implements Initializable, Observer {
             			logBar.appendText("You are not connected to the Simulator!\n");
                 	else 
                 		joystickController.innerPressed(t);
-                    /*orgSceneX = t.getSceneX();
-                    orgSceneY = t.getSceneY();
-                    orgTranslateX = ((Circle)(t.getSource())).getTranslateX();
-                    orgTranslateY = ((Circle)(t.getSource())).getTranslateY();*/
                 }
             };
     //Event - Dragging the joystick
@@ -468,20 +474,6 @@ public class FlightController implements Initializable, Observer {
                 		joystickController.innerDragged(t);
                 		logBar.appendText("Set Aileron: "+joystickController.aileron.get()+" || "+"Elevator: "+joystickController.elevator.get()+"\n");    
                 	}
-                	/* double offsetX = t.getSceneX() - orgSceneX;
-                    double offsetY = t.getSceneY() - orgSceneY;
-                    double newTranslateX = orgTranslateX + offsetX;
-                    double newTranslateY = orgTranslateY + offsetY;
-                    if(isInCircle(newTranslateX,newTranslateY)) {
-                        ((Circle) (t.getSource())).setTranslateX(newTranslateX);
-                        ((Circle) (t.getSource())).setTranslateY(newTranslateY);
-                        if(manual.isSelected()) {
-                            aileron.setValue(normalizationX(newTranslateX));
-                            elevator.setValue(normalizationY(newTranslateY));
-                            viewModel.setJoystick();
-                        }
-                    }
-                    */
                 }
             };
     //Event - Releasing the joystick
@@ -495,9 +487,6 @@ public class FlightController implements Initializable, Observer {
                 		joystickController.innerReleased(t);
                 		logBar.appendText("Set Aileron: "+joystickController.aileron.get()+" || "+"Elevator: "+joystickController.elevator.get()+"\n");
                 	}
-                	
-                    /*((Circle)(t.getSource())).setTranslateX(orgTranslateX);
-                    ((Circle)(t.getSource())).setTranslateY(orgTranslateY);*/
                 }
             };
     //Get data from the mouse 
@@ -513,7 +502,6 @@ public class FlightController implements Initializable, Observer {
                     viewModel.setThrottle();
             		logBar.appendText("Set Rudder: "+throttle.getValue()+"\n");
     			}
-                
             });
 
             rudder.valueProperty().addListener((observable, oldValue, newValue) -> {

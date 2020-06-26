@@ -8,17 +8,19 @@ import java.net.Socket;
 
 public class SimulatorModel {
     public static volatile boolean stop=false;
+    public static volatile boolean on=false;
     private static PrintWriter out;
     private static Socket socket;
     public void Connect(String ip,int port){
         try {
             socket = new Socket(ip, port);
             out=new PrintWriter(socket.getOutputStream());
+            System.out.println("You are connected to FlightGear Simulator !");
+            on=true;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("You are connected to FlightGear Simulator !");
-
+        
     }
 
     public void Send(String[] data){
@@ -35,6 +37,7 @@ public class SimulatorModel {
         out.close();
         try {
             socket.close();
+            on=false;
         } catch (IOException e) {
             e.printStackTrace();
         }
