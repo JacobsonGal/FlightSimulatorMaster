@@ -264,8 +264,8 @@ public class FlightController implements Initializable, Observer {
 		TextField portInput = new TextField();
 		ipInput.appendText("127.0.0.1");
 		ipInput.setPromptText("127.0.0.1");
-		portInput.appendText("2030");
-		portInput.setPromptText("2030");
+		portInput.appendText("5000");
+		portInput.setPromptText("5000");
 		Label ipCommentlabel = new Label("Enter IP of the solver server:");
 		Label portCommentlabel = new Label("Enter Port of the solver server:");
 		Button b = new Button("Connect");

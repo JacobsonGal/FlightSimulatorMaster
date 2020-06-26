@@ -6,7 +6,11 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
+import model.server.network.CacheManager;
 import model.server.network.ClientHandler;
+import model.server.network.ClientHandlerPath;
+import model.server.network.FileCacheManager;
+import model.server.network.MyClientHandler;
 import model.server.network.Server;
 
 public class MySerialServer implements Server {
@@ -66,7 +70,12 @@ public class MySerialServer implements Server {
 	
 	public static void main(String[] args) {
 
-		Server s = null;
+	     Server s=new MySerialServer(); // initialize
+	     CacheManager cm=new FileCacheManager();
+	     MyClientHandler ch=new MyClientHandler(cm);
+	     s.open(5000,new ClientHandlerPath(ch));
+	        
+		/*Server s = null;
 		
 		try {
 			s = new MySerialServer();
@@ -77,6 +86,7 @@ public class MySerialServer implements Server {
 			scanner.nextLine();
 			scanner.close();
 		} catch (Exception e) {}
+		*/
 	}
 	
 }

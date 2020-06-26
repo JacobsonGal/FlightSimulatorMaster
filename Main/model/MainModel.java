@@ -146,7 +146,7 @@ public class MainModel extends Observable implements Observer {
         new Thread(()->{
 
                 int j,i;
-                System.out.println("Sending problem to the server \n");
+                System.out.println("Sending problem to the server");
                 for (i = 0; i < data.length; i++) {
                     System.out.print("");
                     for (j = 0; j < data[i].length - 1; j++) {
@@ -164,7 +164,7 @@ public class MainModel extends Observable implements Observer {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                System.out.println("Solution received!\n");
+                System.out.println("The Solution received is:");
                 System.out.println(usol);
                 String[]tmp=usol.split(",");
 

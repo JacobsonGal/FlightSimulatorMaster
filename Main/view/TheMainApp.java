@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import model.interpreter.commands.*;
+import model.server.MySerialServer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,6 +19,7 @@ public class TheMainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
     	openFlightGear();
+    	//MySerialServer.main(null);
     	System.out.println("Welcome to Flight Simulator Controller !");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Flight.fxml"));
         Parent root = loader.load();

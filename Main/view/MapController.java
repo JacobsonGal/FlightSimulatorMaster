@@ -5,7 +5,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 
-
 public class MapController extends Canvas {
     int[][] mapData;
     double min=Double.MAX_VALUE;
