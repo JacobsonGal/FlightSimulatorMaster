@@ -97,6 +97,7 @@ public class FlightController implements Initializable, Observer {
     
     private BooleanProperty path;
 	public BooleanProperty isConnectedToSimulator;
+	private boolean mapOn=false;
 
 
     //Data binding between View and the ViewModel 
@@ -133,6 +134,7 @@ public class FlightController implements Initializable, Observer {
         path.setValue(false);
 		logBar.setEditable(false);
 		isConnectedToSimulator = new SimpleBooleanProperty();
+		isConnectedToSimulator.set(false);
         plane=new Image[8];
         try {
             plane[0]=new Image(new FileInputStream("./resources/plane0.png"));
@@ -190,6 +192,7 @@ public class FlightController implements Initializable, Observer {
                 this.drawAirplane();
                 map.setMapData(mapData);
                 logBar.appendText("Map loaded succesfully!\n");
+                mapOn=true;
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -319,6 +322,15 @@ public class FlightController implements Initializable, Observer {
     @FXML
     //Set Autopilot ON
     public void AutoPilot(){
+    	if(manual.isSelected())
+        {
+            manual.setSelected(false);
+            joystickController.manual=false;
+            auto.setSelected(true);
+        	logBar.appendText("Autopilot Mode Activated!\n");
+        }
+        else if(auto.isSelected())
+        {
 	    	FileChooser fc = new FileChooser();
 			fc.setTitle("Load File to interpret automatically");
 			fc.setInitialDirectory(new File("./Resources"));
@@ -331,35 +343,53 @@ public class FlightController implements Initializable, Observer {
 						TextArea.appendText(sc.nextLine());
 						TextArea.appendText("\n");
 					}
-					//sc.close();
-					//fileName.setValue(selectedFile.getName());
+					sc.close();
 					viewModel.parse();
 				}
 			} catch (FileNotFoundException e) {e.getStackTrace();}
-	    	//Select("auto");
     	
-    	if(manual.isSelected())
-        {
-            manual.setSelected(false);
-            joystickController.manual=false;
-            auto.setSelected(true);
+        	auto.setSelected(true);
+        	if(isConnectedToSimulator.getValue()) {
+		        viewModel.execute();
+	            logBar.appendText("Autopilot Mode Activated !\n");
+        	}
+        	else
+        	{
+        		Connect();
+        		//System.out.println("You are not connected to the Simulator!");
+        		logBar.appendText("You need to connect to FlightGear!\n");
+        	}
+        		
         }
-        viewModel.execute();
-    	logBar.appendText("Autopilot Mode Activated!\n");
+        else {
+	        auto.setSelected(false);
+	        logBar.appendText("Autopilot Mode diActivated!\n");
+        }
     }
     @FXML
     //Set Manual Joystick ON
     public void Manual()
     {
-        //Select("manual");
         if(auto.isSelected())
         {
             auto.setSelected(false);
             manual.setSelected(true);
             joystickController.manual=true;
             viewModel.stopAutoPilot();
+            logBar.appendText("Manual Mode Activated !\n");
         }
-        logBar.appendText("Manual Mode Activated !\n");
+        else if(manual.isSelected())
+        {
+            manual.setSelected(true);
+            joystickController.manual=true;
+            logBar.appendText("Manual Mode Activated !\n");
+        }
+        else {
+            manual.setSelected(false);
+            joystickController.manual=false;
+            logBar.appendText("Manual Mode diActivated !\n");
+        }
+
     }
     //Draws an airplane on the map according to its position of flight
     public void drawAirplane(){
@@ -446,9 +476,16 @@ public class FlightController implements Initializable, Observer {
     EventHandler<MouseEvent> mapClick = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent e) {
-            markSceneX.setValue(e.getX());
-            markSceneY.setValue(e.getY());
-            drawMark();
+        	if(mapOn) {
+	            markSceneX.setValue(e.getX());
+	            markSceneY.setValue(e.getY());
+	            drawMark();
+        	}
+        	else
+        	{
+        		System.out.println("You didnt load the map!");
+        		logBar.appendText("You didnt load the map!\n");
+        	}
         }
     };
     //Event - Pressing on the joystick
