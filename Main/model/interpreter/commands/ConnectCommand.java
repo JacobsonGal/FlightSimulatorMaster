@@ -8,7 +8,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-@SuppressWarnings("deprecation")
 public class ConnectCommand implements Command ,Observer{
 	public static volatile boolean stop=false;
 	public static PrintWriter out;

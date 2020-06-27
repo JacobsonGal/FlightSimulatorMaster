@@ -4,9 +4,10 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
+
 import model.interpreter.commands.*;
 import model.interpreter.interpret.AutoPilotParser;
-import model.server.MySerialServer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -37,7 +38,8 @@ public class TheMainApp extends Application {
         ctrl.setViewModel(viewModel);
         
         primaryStage.setTitle("FlightGear Simulator Controller");
-		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("./images/logo.png")));
+		//primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("logo.png")));
+        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
 	    primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

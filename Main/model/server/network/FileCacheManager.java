@@ -59,7 +59,7 @@ public class FileCacheManager<Problem,Solution> implements CacheManager<Problem,
 	public void Save(Problem in,Solution out) {
 		disc.put(in, out);
 		prop.putAll(this.disc);
-		String name="hash2.properties";
+		String name="CacheHash.properties";
 		try {
 			prop.store(new FileOutputStream(name), null);
 		} catch (FileNotFoundException e) {

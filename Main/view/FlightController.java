@@ -27,7 +27,6 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.SimulatorModel;
-import model.interpreter.commands.ConnectCommand;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 import java.io.*;
@@ -344,7 +343,7 @@ public class FlightController implements Initializable, Observer {
 						TextArea.appendText("\n");
 					}
 					sc.close();
-					viewModel.parse();
+					viewModel.parse();	
 				}
 			} catch (FileNotFoundException e) {e.getStackTrace();}
     	
@@ -356,7 +355,6 @@ public class FlightController implements Initializable, Observer {
         	else
         	{
         		Connect();
-        		//System.out.println("You are not connected to the Simulator!");
         		logBar.appendText("You need to connect to FlightGear!\n");
         	}
         		
