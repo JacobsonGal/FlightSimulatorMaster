@@ -315,7 +315,6 @@ public class FlightController implements Initializable, Observer {
     }
     //Set Autopilot ON
     public void AutoPilot(){
-    	if(!auto.isSelected()) {
 	    	FileChooser fc = new FileChooser();
 			fc.setTitle("Load File to interpret automatically");
 			fc.setInitialDirectory(new File("./Resources"));
@@ -334,7 +333,7 @@ public class FlightController implements Initializable, Observer {
 				}
 			} catch (FileNotFoundException e) {e.getStackTrace();}
 	    	//Select("auto");
-    	}
+    	
     	if(manual.isSelected())
         {
             manual.setSelected(false);
@@ -372,10 +371,8 @@ public class FlightController implements Initializable, Observer {
             lastY=airplaneY.getValue()*-1;
             gc.clearRect(0,0,W,H);
 
-            if(heading.getValue()>=0&&heading.getValue()<39) {
+            if(heading.getValue()>=0&&heading.getValue()<39) 
                 gc.drawImage(plane[0], w*lastX, lastY*h, 25, 25);
-            	gc.setStroke(Color.BLACK.darker());
-            	gc.setFill(Color.BLACK);}
             if(heading.getValue()>=39&&heading.getValue()<80)
                 gc.drawImage(plane[1], w*lastX, lastY*h, 25, 25);
             if(heading.getValue()>=80&&heading.getValue()<129)

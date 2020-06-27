@@ -226,9 +226,9 @@
             </Label>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Canvas fx:id="markX" height="255.0" width="230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <MapController fx:id="map" height="255.0" width="230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
                    <Canvas fx:id="airplane" height="255.0" width="230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                   <Canvas fx:id="markX" height="255.0" width="230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
                <VBox.margin>
                   <Insets right="1.0" top="30.0" />

@@ -45,12 +45,19 @@ public class MySerialServer implements Server {
 
 	public  void runServer()throws Exception {
 		ServerSocket server=new ServerSocket(port);
-		System.out.println("Solver Server is alive and waiting for a problem!");
+		if(port==5000)
+			System.out.println("Solver Server is alive on port: "+port+" !");
+		else
+			System.out.println("FlightGearClient Server is alive on port: "+port+" !");
 		server.setSoTimeout(300000000);
 		while(!stop){
 			try{
 				Socket aClient=server.accept(); // blocking call
-				System.out.println("You are connected to the solver server!");
+				if(port==5000)
+					System.out.println("You are connected to the solver server!");
+				else
+					System.out.println("FlightGear is connected to the server!");
+				
 				try {
 					c.handleClient(aClient.getInputStream(), aClient.getOutputStream());
 					//aClient.getInputStream().close();
