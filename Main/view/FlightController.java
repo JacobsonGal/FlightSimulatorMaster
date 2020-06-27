@@ -109,8 +109,6 @@ public class FlightController implements Initializable, Observer {
         elevator=new SimpleDoubleProperty();
         viewModel.aileron.bindBidirectional(joystickController.aileron);
         viewModel.elevator.bindBidirectional(joystickController.elevator);
-        //aileron.bindBidirectional(viewModel.aileron);
-        //elevator.bindBidirectional(viewModel.elevator);
         airplaneX=new SimpleDoubleProperty();
         airplaneY=new SimpleDoubleProperty();
         startX=new SimpleDoubleProperty();
@@ -154,9 +152,10 @@ public class FlightController implements Initializable, Observer {
     //Load the map 
     public void LoadMap() {
 		FileChooser fc = new FileChooser();
-		fc.setTitle("Load File to interpret automatically");
+		fc.setTitle("Load MAP");
 		fc.setInitialDirectory(new File("./Resources"));
-		fc.setSelectedExtensionFilter(new ExtensionFilter("Text Files", "*.txt"));
+		FileChooser.ExtensionFilter fileExtensions = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
+		fc.getExtensionFilters().add(fileExtensions);
 		File selectedFile = fc.showOpenDialog(null);
 		
         if (selectedFile != null) {
@@ -326,14 +325,37 @@ public class FlightController implements Initializable, Observer {
             manual.setSelected(false);
             joystickController.manual=false;
             auto.setSelected(true);
+            this.TextArea.deleteText(0,TextArea.getLength());
+            
+    		FileChooser fc = new FileChooser();
+			fc.setTitle("Load Script File to interpret automatically");
+			fc.setInitialDirectory(new File("./Resources"));
+			FileChooser.ExtensionFilter fileExtensions = new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
+			fc.getExtensionFilters().add(fileExtensions);
+			File selectedFile = fc.showOpenDialog(null);
+			try {
+				if (selectedFile != null) {
+					Scanner sc = new Scanner(selectedFile); // Display chosen file in text area
+					while (sc.hasNextLine()) {
+						TextArea.appendText(sc.nextLine());
+						TextArea.appendText("\n");
+					}
+					sc.close();
+					viewModel.parse();	
+				}
+			} catch (FileNotFoundException e) {e.getStackTrace();}
+    	
+
         	logBar.appendText("Autopilot Mode Activated!\n");
         }
         else if(auto.isSelected())
         {
+            this.TextArea.deleteText(0,TextArea.getLength());
 	    	FileChooser fc = new FileChooser();
-			fc.setTitle("Load File to interpret automatically");
+			fc.setTitle("Load Script File to interpret automatically");
 			fc.setInitialDirectory(new File("./Resources"));
-			fc.setSelectedExtensionFilter(new ExtensionFilter("Text Files", "*.txt"));
+			FileChooser.ExtensionFilter fileExtensions = new FileChooser.ExtensionFilter("TEXT files (*.txt)", "*.txt");
+			fc.getExtensionFilters().add(fileExtensions);
 			File selectedFile = fc.showOpenDialog(null);
 			try {
 				if (selectedFile != null) {
@@ -352,8 +374,7 @@ public class FlightController implements Initializable, Observer {
 		        viewModel.execute();
 	            logBar.appendText("Autopilot Mode Activated !\n");
         	}
-        	else
-        	{
+        	else{
         		Connect();
         		logBar.appendText("You need to connect to FlightGear!\n");
         	}
@@ -361,6 +382,7 @@ public class FlightController implements Initializable, Observer {
         }
         else {
 	        auto.setSelected(false);
+	        viewModel.stopAutoPilot();
 	        logBar.appendText("Autopilot Mode diActivated!\n");
         }
     }
