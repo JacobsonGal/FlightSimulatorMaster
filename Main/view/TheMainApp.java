@@ -18,7 +18,7 @@ public class TheMainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-    	openFlightGear();
+    	//openFlightGear();
     	//MySerialServer.main(null);
     	System.out.println("Welcome to Flight Simulator Controller !");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Flight.fxml"));

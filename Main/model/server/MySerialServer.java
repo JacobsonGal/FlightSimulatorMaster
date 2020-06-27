@@ -70,11 +70,15 @@ public class MySerialServer implements Server {
 	
 	public static void main(String[] args) {
 
+		try {
+		
 	     Server s=new MySerialServer(); // initialize
 	     CacheManager cm=new FileCacheManager();
 	     MyClientHandler ch=new MyClientHandler(cm);
 	     s.open(5000,new ClientHandlerPath(ch));
 	        
+		} catch (Exception e) {}
+	
 		/*Server s = null;
 		
 		try {

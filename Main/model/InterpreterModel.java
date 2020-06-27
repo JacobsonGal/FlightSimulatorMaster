@@ -2,9 +2,10 @@ package model;
 
 import model.interpreter.interpret.*;
 
+@SuppressWarnings("rawtypes")
 public class InterpreterModel {
     AutoPilotParser parser;
-    Lexer lexer;
+	Lexer lexer;
 
     public InterpreterModel() {
         String[] start= {
@@ -26,7 +27,6 @@ public class InterpreterModel {
                 "var altr = 2000",
                 "var e=0",
                 "var r=0"
-
         };
         lexer=new CompLexer(start);
         parser=new AutoPilotParser(new CompParser(lexer.lexicalCheck()));
@@ -48,7 +48,6 @@ public class InterpreterModel {
    }
    public void execute()
    {
-      
        if(parser.i!=0)
            parser.i--;
        parser.Continue();
