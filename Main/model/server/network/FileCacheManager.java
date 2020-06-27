@@ -17,7 +17,7 @@ public class FileCacheManager<Problem,Solution> implements CacheManager<Problem,
 	@SuppressWarnings("unchecked")
 	public FileCacheManager() {
 		prop=new Properties();
-		String name="hash2.properties";
+		String name="CacheHash.properties";
 		try {
 			prop.load(new FileInputStream(name));
 		} catch (FileNotFoundException e) {

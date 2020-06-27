@@ -7,7 +7,8 @@ public class InterpreterModel {
     AutoPilotParser parser;
 	Lexer lexer;
 
-    public InterpreterModel() {
+    @SuppressWarnings("unchecked")
+   public InterpreterModel() {
         String[] start= {
                 "openDataServer 5400 10",
                 "connect 127.0.0.1 5402",
@@ -40,8 +41,8 @@ public class InterpreterModel {
         }
         AutoPilotParser.stop=true;
     }
-
-    public void interpet(String[] list){
+	@SuppressWarnings("unchecked")
+   public void interpet(String[] list){
        lexer=new CompLexer(list);
        parser.add(lexer.lexicalCheck());
        parser.parse();

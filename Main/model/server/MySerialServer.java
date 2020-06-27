@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Scanner;
 
 import model.server.network.CacheManager;
 import model.server.network.ClientHandler;
@@ -19,11 +18,10 @@ public class MySerialServer implements Server {
 	private static ClientHandler c;
 	private volatile boolean stop;
 	
-	
 	public MySerialServer() {
 		this.stop = false;
 	}
-
+	@SuppressWarnings("static-access")
 	@Override
 	public void open(int port,ClientHandler c) {
 		this.port=port;
@@ -36,19 +34,16 @@ public class MySerialServer implements Server {
 			}
 		}).start();
 	}
-
 	@Override
 	public void stop() {
 		stop=true;
 	}
-
-
 	public  void runServer()throws Exception {
 		ServerSocket server=new ServerSocket(port);
 		if(port==5000)
 			System.out.println("Solver Server is alive on port: "+port+" !");
 		else
-			System.out.println("FlightGearClient Server is alive on port: "+port+" !");
+			System.out.println("FlightGear Server is alive on port: "+port+" !");
 		server.setSoTimeout(300000000);
 		while(!stop){
 			try{
@@ -56,7 +51,7 @@ public class MySerialServer implements Server {
 				if(port==5000)
 					System.out.println("You are connected to the solver server!");
 				else
-					System.out.println("FlightGear is connected to the server!");
+					System.out.println("FlightGear is connected to the FlightGear Server !");
 				
 				try {
 					c.handleClient(aClient.getInputStream(), aClient.getOutputStream());
@@ -74,30 +69,11 @@ public class MySerialServer implements Server {
 		}
 		server.close();
 	}
-	
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
-
-		try {
-		
-	     Server s=new MySerialServer(); // initialize
+	     Server s=new MySerialServer(); 
 	     CacheManager cm=new FileCacheManager();
 	     MyClientHandler ch=new MyClientHandler(cm);
 	     s.open(5000,new ClientHandlerPath(ch));
-	        
-		} catch (Exception e) {}
-	
-		/*Server s = null;
-		
-		try {
-			s = new MySerialServer();
-			s.open(5500,c);
-			Thread.sleep(100);
-			System.out.println("Press any key to close the server");
-			Scanner scanner = new Scanner(System.in);
-			scanner.nextLine();
-			scanner.close();
-		} catch (Exception e) {}
-		*/
 	}
-	
 }

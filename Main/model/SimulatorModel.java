@@ -1,10 +1,8 @@
 package model;
 
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-
 
 public class SimulatorModel {
     public static volatile boolean stop=false;
@@ -22,7 +20,6 @@ public class SimulatorModel {
         }
         
     }
-
     public void Send(String[] data){
         for (String s: data) {
             out.println(s);

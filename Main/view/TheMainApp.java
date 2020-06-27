@@ -5,31 +5,37 @@ import java.io.File;
 import java.io.IOException;
 
 import model.interpreter.commands.*;
+import model.interpreter.interpret.AutoPilotParser;
 import model.server.MySerialServer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import model.MainModel;
+import model.SimulatorModel;
 
 public class TheMainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
     	//openFlightGear();
-    	//MySerialServer.main(null);
     	System.out.println("Welcome to Flight Simulator Controller !");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Flight.fxml"));
         Parent root = loader.load();
+        
         FlightController ctrl = loader.getController();
         ViewModel viewModel=new ViewModel();
+        SimulatorModel simulator=new SimulatorModel();
         MainModel model=new MainModel();
+        
         model.addObserver(viewModel);
-        viewModel.setModel(model);
+        viewModel.setModels(model,simulator);
         viewModel.addObserver(ctrl);
         ctrl.setViewModel(viewModel);
+        
         primaryStage.setTitle("FlightGear Simulator Controller");
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("./images/logo.png")));
 	    primaryStage.setResizable(false);
@@ -39,24 +45,24 @@ public class TheMainApp extends Application {
             DisconnectCommand command=new DisconnectCommand();
             String[] disconnect={""};
             command.executeCommand(disconnect);
-            //AutoPilotParser.thread1.interrupt();
-            model.stopAll();
+            AutoPilotParser.thread1.interrupt();
+            viewModel.stopAll();
             System.out.println("Exit Flight Simulator Controller");
         });
 
     }
-
     public static void main(String[] args) {
         launch(args);
+		Platform.exit();// safe exit
+		System.exit(0);
     }
-    
     public static void openFlightGear() throws IOException {
 		final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
 		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-			// target FlightGear application in the current system
-		    desktop.open(new File("/Applications/FlightGear.app"));
+			// Target FlightGear application in the current system
+		    desktop.open(new File("/Applicaitions/FlightGear.app"));
 		} else {
-		    throw new UnsupportedOperationException("Browse action not supported");
+		    throw new UnsupportedOperationException("Open action not supported");
 		}
 	
 	}

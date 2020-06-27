@@ -143,12 +143,13 @@ public class FlightController implements Initializable, Observer {
             plane[5]=new Image(new FileInputStream("./resources/plane225.png"));
             plane[6]=new Image(new FileInputStream("./resources/plane270.png"));
             plane[7]=new Image(new FileInputStream("./resources/plane315.png"));
-            mark=new Image(new FileInputStream("./resources/mark1.png"));
+            mark=new Image(new FileInputStream("./resources/mark.png"));
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
+    @FXML
     //Load the map 
     public void LoadMap() {
 		FileChooser fc = new FileChooser();
@@ -197,6 +198,7 @@ public class FlightController implements Initializable, Observer {
             }
         }
     }
+    @FXML
     //Connect to FlightGear simulator
     public void Connect(){
 		Stage window = new Stage();
@@ -256,6 +258,7 @@ public class FlightController implements Initializable, Observer {
 		});
 
     }
+    @FXML
     //Connect to Solver and calculate the shortest path
     public void CalculatePath(){
     	Stage window = new Stage();
@@ -313,6 +316,7 @@ public class FlightController implements Initializable, Observer {
 				logBar.appendText("Invalid parameters!\n");}
 		});
     }
+    @FXML
     //Set Autopilot ON
     public void AutoPilot(){
 	    	FileChooser fc = new FileChooser();
@@ -339,11 +343,11 @@ public class FlightController implements Initializable, Observer {
             manual.setSelected(false);
             joystickController.manual=false;
             auto.setSelected(true);
-
         }
         viewModel.execute();
     	logBar.appendText("Autopilot Mode Activated!\n");
     }
+    @FXML
     //Set Manual Joystick ON
     public void Manual()
     {
@@ -437,9 +441,6 @@ public class FlightController implements Initializable, Observer {
             }
             move=solution[i];
         }
-
-
-
     }
     //Event - pressing on the map
     EventHandler<MouseEvent> mapClick = new EventHandler<MouseEvent>() {
@@ -463,7 +464,6 @@ public class FlightController implements Initializable, Observer {
                 }
             };
     //Event - Dragging the joystick
-    //Event - Dragging the joystick
     EventHandler<MouseEvent> joystickMove =
             new EventHandler<MouseEvent>() {
 
@@ -477,7 +477,6 @@ public class FlightController implements Initializable, Observer {
                 	}
                 }
             };
-    //Event - Releasing the joystick
     //Event - Releasing the joystick
     EventHandler<MouseEvent> joystickRelease = new EventHandler<MouseEvent>() {
                 @Override

@@ -22,6 +22,7 @@ public class OpenServerCommend implements Command {
 
 		s=new MySerialServer();
 		s.open(Integer.parseInt(array[1]), new ClientHandler() {
+			
 			@Override
 			public void handleClient(InputStream in, OutputStream out) {
 				BufferedReader Bin=new BufferedReader(new InputStreamReader(in));
