@@ -557,7 +557,7 @@ public class FlightController implements Initializable, Observer {
     				logBar.appendText("You are not connected to the Simulator!\n");
     			else if (manual.isSelected()) {
                     viewModel.setThrottle();
-            		logBar.appendText("Set Rudder: "+throttle.getValue()+"\n");
+            		logBar.appendText("Set Throttle: "+throttle.getValue()+"\n");
     			}
             });
 

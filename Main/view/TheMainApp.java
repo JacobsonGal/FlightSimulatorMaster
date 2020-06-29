@@ -38,7 +38,6 @@ public class TheMainApp extends Application {
         ctrl.setViewModel(viewModel);
         
         primaryStage.setTitle("FlightGear Simulator Controller");
-		//primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("logo.png")));
         primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
 	    primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));
