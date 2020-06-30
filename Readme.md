@@ -218,7 +218,7 @@ This is done by the Observer Pattern, which binds the different components toget
 ```
 
 ## Implements
-* **Java | XML | CSS | 
+* Java | XML | CSS | 
 
 ## Built With
 * [Eclipse](https://www.eclipse.org/downloads/packages/release/kepler/sr1/eclipse-ide-java-developers) - Java IDE
