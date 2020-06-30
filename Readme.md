@@ -184,7 +184,8 @@ event-oriented programming.
 separate the View from the Model.
 * **Data Binding** – We can wrap variables such as those in the View, and then when we change
 something in the text, it will automatically changed in the ViewModel.
-[![Presentation Project](/UML/databind.png)]
+
+![Presentation Project(/UML/databind.png)]
 
 For the MVVM architecture to work, we'll have to wrap the different components together. 
 This is done by the Observer Pattern, which binds the different components together, and notify them about changes that are made or needs to be made as required by the operator. 
@@ -216,8 +217,10 @@ This is done by the Observer Pattern, which binds the different components toget
         });
 ```
 
-## Built With
+## Implements
+* **Java | XML | CSS | 
 
+## Built With
 * [Eclipse](https://www.eclipse.org/downloads/packages/release/kepler/sr1/eclipse-ide-java-developers) - Java IDE
 * [Scene Builder](https://gluonhq.com/products/scene-builder/)  - Scene Builder 8.5.0
 
