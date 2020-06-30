@@ -149,9 +149,7 @@ So if, for example, we take a look at the "loop" command or "if" command, then w
 ---
 ### Interpreter stages
 
-<p align="center">
-  <img src="/UML/interpreter.png" width="600">
-</p>
+![Presentation Project](/UML/interpreter.png)
 
 So this script-reader works in a very similar way to the interpreter of a real programming language.
 
