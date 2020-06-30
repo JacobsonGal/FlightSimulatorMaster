@@ -1,6 +1,6 @@
 # Flight Simulator Controller 
 
-[![Presentation Project](/UML/main.png)]
+![Presentation Project](/UML/main.png)
 [![Presentation Project](/UML/example.png)](youtubelinkhere)
 
 Press on the photo so see a video of the project.
