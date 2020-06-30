@@ -1,5 +1,6 @@
 # Flight Simulator Controller 
 
+[![Presentation Project](/UML/main.png)]
 [![Presentation Project](/UML/example.png)](youtubelinkhere)
 
 Press on the photo so see a video of the project.
@@ -182,6 +183,7 @@ event-oriented programming.
 separate the View from the Model.
 * **Data Binding** – We can wrap variables such as those in the View, and then when we change
 something in the text, it will automatically changed in the ViewModel.
+[![Presentation Project](/UML/databind.png)]
 
 For the MVVM architecture to work, we'll have to wrap the different components together. 
 This is done by the Observer Pattern, which binds the different components together, and notify them about changes that are made or needs to be made as required by the operator. 
