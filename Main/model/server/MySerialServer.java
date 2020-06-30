@@ -57,6 +57,8 @@ public class MySerialServer implements Server {
 					c.handleClient(aClient.getInputStream(), aClient.getOutputStream());
 					//aClient.getInputStream().close();
 					//aClient.getOutputStream().close();
+					if(port==5000)
+						System.out.println(aClient.getOutputStream().toString());
 					aClient.close();
 		} catch (IOException e) {
 			System.out.println("invalid input2-output");

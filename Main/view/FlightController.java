@@ -325,7 +325,6 @@ public class FlightController implements Initializable, Observer {
             manual.setSelected(false);
             joystickController.manual=false;
             auto.setSelected(true);
-            this.TextArea.deleteText(0,TextArea.getLength());
             
     		FileChooser fc = new FileChooser();
 			fc.setTitle("Load Script File to interpret automatically");
@@ -335,6 +334,7 @@ public class FlightController implements Initializable, Observer {
 			File selectedFile = fc.showOpenDialog(null);
 			try {
 				if (selectedFile != null) {
+		            this.TextArea.deleteText(0,TextArea.getLength());
 					Scanner sc = new Scanner(selectedFile); // Display chosen file in text area
 					while (sc.hasNextLine()) {
 						TextArea.appendText(sc.nextLine());
@@ -344,13 +344,18 @@ public class FlightController implements Initializable, Observer {
 					viewModel.parse();	
 				}
 			} catch (FileNotFoundException e) {e.getStackTrace();}
-    	
+			
+        	if(isConnectedToSimulator.getValue()) {
+		        viewModel.execute();
+	            logBar.appendText("Autopilot Mode Activated !\n");
+        	}else{
+        		Connect();
+        		logBar.appendText("You need to connect to FlightGear!\n");
+        	}
 
-        	logBar.appendText("Autopilot Mode Activated!\n");
         }
         else if(auto.isSelected())
         {
-            this.TextArea.deleteText(0,TextArea.getLength());
 	    	FileChooser fc = new FileChooser();
 			fc.setTitle("Load Script File to interpret automatically");
 			fc.setInitialDirectory(new File("./Resources"));
@@ -359,6 +364,7 @@ public class FlightController implements Initializable, Observer {
 			File selectedFile = fc.showOpenDialog(null);
 			try {
 				if (selectedFile != null) {
+		            this.TextArea.deleteText(0,TextArea.getLength());
 					Scanner sc = new Scanner(selectedFile); // Display chosen file in text area
 					while (sc.hasNextLine()) {
 						TextArea.appendText(sc.nextLine());
@@ -509,7 +515,7 @@ public class FlightController implements Initializable, Observer {
         }
     };
     //Event - Pressing on the joystick
-    EventHandler<MouseEvent> joystickClick =
+    EventHandler<MouseEvent> innerPressed =
             new EventHandler<MouseEvent>() {
 
                 @Override
@@ -521,7 +527,7 @@ public class FlightController implements Initializable, Observer {
                 }
             };
     //Event - Dragging the joystick
-    EventHandler<MouseEvent> joystickMove =
+    EventHandler<MouseEvent> innerDragged =
             new EventHandler<MouseEvent>() {
 
                 @Override
@@ -535,7 +541,7 @@ public class FlightController implements Initializable, Observer {
                 }
             };
     //Event - Releasing the joystick
-    EventHandler<MouseEvent> joystickRelease = new EventHandler<MouseEvent>() {
+    EventHandler<MouseEvent> innerReleased = new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent t) {
                 	if (!isConnectedToSimulator.get())
@@ -569,9 +575,9 @@ public class FlightController implements Initializable, Observer {
                 	logBar.appendText("Set Rudder: "+rudder.getValue()+"\n");
     			}
             });
-            Joystick.setOnMousePressed(joystickClick);
-            Joystick.setOnMouseDragged(joystickMove);
-            Joystick.setOnMouseReleased(joystickRelease);
+            Joystick.setOnMousePressed(innerPressed);
+            Joystick.setOnMouseDragged(innerDragged);
+            Joystick.setOnMouseReleased(innerReleased);
             markX.setOnMouseClicked(mapClick);
         }
     }
