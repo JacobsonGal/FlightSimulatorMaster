@@ -191,19 +191,22 @@ For the MVVM architecture to work, we'll have to wrap the different components t
 This is done by the Observer Pattern, which binds the different components together, and notify them about changes that are made or needs to be made as required by the operator. 
 
 ```java
-   	openFlightGear();
     	System.out.println("Welcome to Flight Simulator Controller !");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Flight.fxml"));
         Parent root = loader.load();
+        
         FlightController ctrl = loader.getController();
         ViewModel viewModel=new ViewModel();
+        SimulatorModel simulator=new SimulatorModel();
         MainModel model=new MainModel();
+        
         model.addObserver(viewModel);
-        viewModel.setModel(model);
+        viewModel.setModels(model,simulator);
         viewModel.addObserver(ctrl);
         ctrl.setViewModel(viewModel);
+        
         primaryStage.setTitle("FlightGear Simulator Controller");
-		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("./images/logo.png")));
+        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
 	    primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
@@ -211,10 +214,9 @@ This is done by the Observer Pattern, which binds the different components toget
             DisconnectCommand command=new DisconnectCommand();
             String[] disconnect={""};
             command.executeCommand(disconnect);
-            //AutoPilotParser.thread1.interrupt();
-            model.stopAll();
+            AutoPilotParser.thread1.interrupt();
+            viewModel.stopAll();
             System.out.println("Exit Flight Simulator Controller");
-        });
 ```
 
 ## Implements
