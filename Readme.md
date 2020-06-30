@@ -71,21 +71,6 @@ You can see that the Bridge Design Pattern was implemented, as we created a sepa
 
 The specific problem and solution in this project, is that when given a matrix the server will be able to solve it and return the quickest path from point A to point B using **A-star** algorithm as said before.
 
-For example: lets assume we have this matrix:
-
-|  |   |  |  |
-| :---: | :---: | :---: | :---: |
-| **114** | **93**  | 164 | 123 |
-| 109 | **27**  | **40**  | **15**  |
-| 156 | 175 | 189 | **5**   |
-| 160 | 186 | 153 | **38**  |
-
-If we'll set the start point to be 114 (0,0) and the end point to be 38 (3,3) then the path ( the output ) will be:
-
-Right, Down, Right, Right, Down, Down.
-
-
-
 ---
 ##   Interpreter 
 
@@ -151,17 +136,14 @@ So if, for example, we take a look at the "loop" command or "if" command, then w
 
 ![Presentation Project](/UML/interpreter.png)
 
-So this script-reader works in a very similar way to the interpreter of a real programming language.
 
 The first stage that happens in the interpretation process is ``Lexer``.
 
 The Lexer takes the string as it is, and converts it to a logical distribution according to commands and parameters that can run later on with a Scanner.
 
-The next stage is the ``parser`` stage, which begins converting the "array" created by the Lexer into commands and executes them.
+The next stage is the ``Parser`` stage, which begins converting the "array" created by the Lexer into commands and executes them.
 
-However, since the script is only supposed to control the plane, we don't want that the interpreter will have to deal with connecting to server and running the simulator, in case there are syntactic errors or incorrent entries that might be discovered in the middle of the script.
-
-So, before we start running the commands, we will make sure that a ``Pre-Parser`` will pass the initial scan on the script and check for Syntax errors, such as incorrect parameters or irrational values.
+The last stage is the ``Send`` stage that occurred after the intrpreter finish to intrpret, which send the commands to the simulator.
 
 ---
 ## MVVM Architecture
