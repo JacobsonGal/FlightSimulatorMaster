@@ -71,21 +71,6 @@ You can see that the Bridge Design Pattern was implemented, as we created a sepa
 
 The specific problem and solution in this project, is that when given a matrix the server will be able to solve it and return the quickest path from point A to point B using **A-star** algorithm as said before.
 
-For example: lets assume we have this matrix:
-
-|  |   |  |  |
-| :---: | :---: | :---: | :---: |
-| **114** | **93**  | 164 | 123 |
-| 109 | **27**  | **40**  | **15**  |
-| 156 | 175 | 189 | **5**   |
-| 160 | 186 | 153 | **38**  |
-
-If we'll set the start point to be 114 (0,0) and the end point to be 38 (3,3) then the path ( the output ) will be:
-
-Right, Down, Right, Right, Down, Down.
-
-
-
 ---
 ##   Interpreter 
 
@@ -149,21 +134,16 @@ So if, for example, we take a look at the "loop" command or "if" command, then w
 ---
 ### Interpreter stages
 
-<p align="center">
-  <img src="/UML/interpreter.png" width="600">
-</p>
+![Presentation Project](/UML/interpreter.png)
 
-So this script-reader works in a very similar way to the interpreter of a real programming language.
 
 The first stage that happens in the interpretation process is ``Lexer``.
 
 The Lexer takes the string as it is, and converts it to a logical distribution according to commands and parameters that can run later on with a Scanner.
 
-The next stage is the ``parser`` stage, which begins converting the "array" created by the Lexer into commands and executes them.
+The next stage is the ``Parser`` stage, which begins converting the "array" created by the Lexer into commands and executes them.
 
-However, since the script is only supposed to control the plane, we don't want that the interpreter will have to deal with connecting to server and running the simulator, in case there are syntactic errors or incorrent entries that might be discovered in the middle of the script.
-
-So, before we start running the commands, we will make sure that a ``Pre-Parser`` will pass the initial scan on the script and check for Syntax errors, such as incorrect parameters or irrational values.
+The last stage is the ``Send`` stage that occurred after the intrpreter finish to intrpret, which send the commands to the simulator.
 
 ---
 ## MVVM Architecture
@@ -184,25 +164,29 @@ event-oriented programming.
 separate the View from the Model.
 * **Data Binding** – We can wrap variables such as those in the View, and then when we change
 something in the text, it will automatically changed in the ViewModel.
-[![Presentation Project](/UML/databind.png)]
+
+![Presentation Project](/UML/databind.png)
 
 For the MVVM architecture to work, we'll have to wrap the different components together. 
 This is done by the Observer Pattern, which binds the different components together, and notify them about changes that are made or needs to be made as required by the operator. 
 
 ```java
-   	openFlightGear();
     	System.out.println("Welcome to Flight Simulator Controller !");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Flight.fxml"));
         Parent root = loader.load();
+        
         FlightController ctrl = loader.getController();
         ViewModel viewModel=new ViewModel();
+        SimulatorModel simulator=new SimulatorModel();
         MainModel model=new MainModel();
+        
         model.addObserver(viewModel);
-        viewModel.setModel(model);
+        viewModel.setModels(model,simulator);
         viewModel.addObserver(ctrl);
         ctrl.setViewModel(viewModel);
+        
         primaryStage.setTitle("FlightGear Simulator Controller");
-		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("./images/logo.png")));
+        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
 	    primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
@@ -210,14 +194,15 @@ This is done by the Observer Pattern, which binds the different components toget
             DisconnectCommand command=new DisconnectCommand();
             String[] disconnect={""};
             command.executeCommand(disconnect);
-            //AutoPilotParser.thread1.interrupt();
-            model.stopAll();
+            AutoPilotParser.thread1.interrupt();
+            viewModel.stopAll();
             System.out.println("Exit Flight Simulator Controller");
-        });
 ```
 
-## Built With
+## Implements
+* Java | XML | CSS | 
 
+## Built With
 * [Eclipse](https://www.eclipse.org/downloads/packages/release/kepler/sr1/eclipse-ide-java-developers) - Java IDE
 * [Scene Builder](https://gluonhq.com/products/scene-builder/)  - Scene Builder 8.5.0
 
