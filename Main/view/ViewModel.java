@@ -65,7 +65,12 @@ public class ViewModel extends Observable implements Observer {
         this.interpreterModel=new InterpreterModel();
     }
     public void setThrottle(){
-        String[] data={"set /controls/engines/current-engine/throttle "+throttle.getValue()};
+    	
+    	//Duel engine plane:
+    	//String[] data={"set /controls/engines/engine[0]/throttle "+throttle.getValue(),"set /controls/engines/engine[1]/throttle "+throttle.getValue()};
+        
+    	//Single engine plane:
+    	String[] data={"set /controls/engines/current-engine/throttle "+throttle.getValue()};
         simulatorModel.Send(data);
     }
     public void setRudder(){
@@ -78,6 +83,17 @@ public class ViewModel extends Observable implements Observer {
                 "set /controls/flight/elevator " + elevator.getValue(),
         };
         simulatorModel.Send(data);
+    }
+    //For planes with foldable gears:
+    public void setGears(int flag){
+    	if(flag==1) {
+    		String[] data = {"set /controls/gear/gear-down 1"};
+    		simulatorModel.Send(data);
+    	}
+    	else {
+    		String[] data = {"set /controls/gear/gear-down 0"};
+    		simulatorModel.Send(data);
+    	}
     }
     public void connectManual(String ip,int port){
     	simulatorModel.Connect(ip,port);

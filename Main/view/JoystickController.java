@@ -75,4 +75,11 @@ public class JoystickController {
         double new_min=-1;
         return (((num-min)/(max-min)*(new_max-new_min)+new_min));
     }
+	public void gearUp() {
+		viewModel.setGears(0);
+		
+	}
+	public void gearDown() {
+		viewModel.setGears(1);
+	}
 }

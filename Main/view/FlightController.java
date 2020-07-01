@@ -63,6 +63,8 @@ public class FlightController implements Initializable, Observer {
     @FXML
     private RadioButton manual;
     @FXML
+    private RadioButton gears;
+    @FXML
     private Circle border;
     @FXML
     private Circle Joystick;
@@ -552,6 +554,22 @@ public class FlightController implements Initializable, Observer {
                 	}
                 }
             };
+    @FXML
+    //Set Gears up\down
+    public void toggleGear() {
+    	if (!isConnectedToSimulator.get())
+			logBar.appendText("You are not connected to the Simulator!\n");
+    	else if(gears.isSelected())
+        {
+        	joystickController.gearUp();
+            logBar.appendText("Gears Up !\n");
+        }
+    	else 
+    	{
+    		joystickController.gearDown();
+            logBar.appendText("Gears Down !\n");
+		}
+    }
     //Get data from the mouse 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

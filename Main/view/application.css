@@ -5,3 +5,8 @@
  -fx-background-image: url('images/background.jpg');
  -fx-background-size: 100% 100%;
 }
+
+.radio-button:selected .radio .dot {
+    -fx-background-color: green;
+    -fx-background-insets: 0;
+}

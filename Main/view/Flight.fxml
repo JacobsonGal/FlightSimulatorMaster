@@ -19,9 +19,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
-<?import view.MapController?>
 
-<BorderPane prefHeight="470.0" prefWidth="800.0" style="-fx-background-color: #3d495f;" styleClass="bodybg" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.251" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FlightController">
+<?import view.MapController?> 
+
+<BorderPane prefHeight="470.0" prefWidth="800.0" style="-fx-background-color: #3d495f;" styleClass="bodybg" stylesheets="@application.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FlightController">
 	<bottom>
 	</bottom>
    <bottom>
@@ -118,6 +119,23 @@
       										<Font name="Century Gothic" size="18.0" />
       									</font>
       								</Label>
+                        <VBox layoutX="-135.0" layoutY="108.0" prefHeight="71.0" prefWidth="58.0">
+                           <children>
+                              <RadioButton fx:id="gears" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#toggleGear" prefHeight="18.0" prefWidth="26.0" textAlignment="CENTER" textFill="WHITE" underline="true">
+                                 <VBox.margin>
+                                    <Insets left="12.0" />
+                                 </VBox.margin>
+                              </RadioButton>
+                              <Label text="Gears" textAlignment="RIGHT" textFill="WHITE" underline="true">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets left="-1.0" top="-5.0" />
+                           </padding>
+                        </VBox>
       							</children>
                      <HBox.margin>
                         <Insets left="-40.0" top="-30.0" />
