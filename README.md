@@ -2,7 +2,7 @@
 [![Presentation Project](/UML/main.png)](https://www.youtube.com/watch?v=NhhZrdrjUVs)
 
 # Flight Simulator Controller 
-[![Presentation Project](/UML/example.png)]
+![Presentation Project](/UML/example.png)
 
 ## Server
 
