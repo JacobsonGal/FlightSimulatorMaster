@@ -22,7 +22,7 @@
 
 <?import view.MapController?> 
 
-<BorderPane prefHeight="470.0" prefWidth="800.0" style="-fx-background-color: #3d495f;" styleClass="bodybg" stylesheets="@application.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FlightController">
+<BorderPane prefHeight="470.0" prefWidth="800.0" style="-fx-background-color: #3d495f;" styleClass="bodybg" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.251" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.FlightController">
 	<bottom>
 	</bottom>
    <bottom>

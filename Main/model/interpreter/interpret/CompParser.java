@@ -46,7 +46,7 @@ public class CompParser implements Parser {
         commandTable.put("disconnect",new CommandExpression(new DisconnectCommand()));
         Scanner s= null;
         try {
-            s = new Scanner(new BufferedReader(new FileReader("simulator_vars.txt")));
+            s = new Scanner(new BufferedReader(new FileReader("./resources/simulator_vars.txt")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
