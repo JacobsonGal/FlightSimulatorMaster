@@ -1,0 +1,16 @@
+/AssignCommand.class
+/AutoRouteCommand.class
+/Command.class
+/CommandExpression.class
+/ConditionCommand.class
+/ConnectCommand.class
+/DisconnectCommand.class
+/IfCommand.class
+/LoopCommand.class
+/OpenServerCommend$1.class
+/OpenServerCommend.class
+/PredicateCommand.class
+/PrintCommand.class
+/ReturnCommand.class
+/SleepCommand.class
+/VarCommand.class
