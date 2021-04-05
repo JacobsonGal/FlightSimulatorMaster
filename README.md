@@ -182,7 +182,7 @@ This is done by the Observer Pattern, which binds the different components toget
         
         primaryStage.setTitle("FlightGear Simulator Controller");
         primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("logo.png")));
-	    primaryStage.setResizable(false);
+	primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> {
